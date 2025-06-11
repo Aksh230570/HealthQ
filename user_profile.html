@@ -1,0 +1,30 @@
+<!-- user_profile.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+
+<div class="container">
+    <h1 class="my-4">User Profile</h1>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Profile Information</h5>
+            <p><strong>Name:</strong> {{ user['name'] }}</p>
+            <p><strong>Age:</strong> {{ user['age'] }}</p>
+            <p><strong>Blood Group:</strong> {{ user['blood_group'] }}</p>
+            <p><strong>Date of Birth:</strong> {{ user['dob'] }}</p>
+            <p><strong>Medical History:</strong> {{ user['medical_history'] }}</p>
+            <p><strong>Username:</strong> {{ user['username'] }}</p>
+
+            <a href="{{ url_for('edit_profile') }}" class="btn btn-primary">Edit Profile</a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

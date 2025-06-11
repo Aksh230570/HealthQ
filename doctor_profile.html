@@ -1,0 +1,126 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Doctor Profile</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .profile-container {
+      max-width: 900px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    .time-slots button {
+      margin: 5px;
+      width: 120px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand" href="/">HealthQ</a>
+  </div>
+</nav>
+
+<div class="profile-container mt-5">
+  <h2 class="fw-bold">{{ doctor.name }}</h2>
+  <p>{{ doctor.qualifications }}</p>
+  <p><strong>Experience:</strong> {{ doctor.experience }} years</p>
+  <p><strong>Speciality:</strong> {{ doctor.speciality }}</p>
+  <p><strong>Hospital:</strong> {{ doctor.hospital }}</p>
+  <p><strong>Location:</strong> {{ doctor.location }}</p>
+  <p><strong>Rating:</strong> {{ doctor.rating }}%</p>
+  <p><strong>Patients Visited:</strong> {{ doctor.patients }}</p>
+  <p><strong>Consultation Fee:</strong> ₹{{ doctor.consultation_fee }}</p>
+
+  <hr>
+
+  <h4 class="fw-bold mb-3">Book Appointment</h4>
+
+  <form action="/enter_patient_details/{{ doctor.id }}" method="post">
+    <label>Select Date:</label>
+    <input type="date" id="appointment-date" name="date" class="form-control mb-3" required>
+
+    <h5>Select Time Slot:</h5>
+    <div class="time-slots">
+      <!-- Dynamic slot buttons will be inserted here -->
+    </div>
+
+    <input type="hidden" name="time" id="selected-time" required>
+
+    <button type="submit" class="btn btn-success w-100 mt-4">Continue</button>
+  </form>
+</div>
+
+<footer class="bg-dark text-white text-center py-3 mt-5">
+  &copy; 2025 Doctor Appointment System
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const dateInput = document.getElementById('appointment-date');
+  const today = new Date().toISOString().split('T')[0];
+  dateInput.setAttribute('min', today);
+
+  // Pre-fill with today's date and fetch slots
+  dateInput.value = today;
+  updateUrlAndFetchSlots(today);
+});
+
+document.getElementById('appointment-date').addEventListener('change', function() {
+  const selectedDate = this.value;
+  if (selectedDate) {
+    updateUrlAndFetchSlots(selectedDate);
+  }
+});
+
+function updateUrlAndFetchSlots(date) {
+  window.history.replaceState({}, '', `/doctor_profile/{{ doctor.id }}?date=${date}`);
+  fetchAvailableSlots(date);
+}
+
+function fetchAvailableSlots(date) {
+  fetch(`/get_available_slots_for_date?date=${date}&doctor_id={{ doctor.id }}`)
+    .then(response => response.json())
+    .then(data => {
+      const container = document.querySelector('.time-slots');
+      container.innerHTML = '';
+
+      if (data.available_slots && data.available_slots.length > 0) {
+        data.available_slots.forEach(slot => {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.classList.add('btn', 'btn-outline-secondary');
+          button.textContent = slot;
+          button.onclick = () => selectTime(button);
+          container.appendChild(button);
+        });
+      } else {
+        container.innerHTML = '<p>No available slots</p>';
+      }
+    })
+    .catch(err => console.error('Error:', err));
+}
+
+function selectTime(button) {
+  document.querySelectorAll('.time-slots button').forEach(btn => btn.classList.remove('btn-primary'));
+  button.classList.add('btn-primary');
+  document.getElementById('selected-time').value = button.innerText;
+}
+</script>
+
+</body>
+</html>

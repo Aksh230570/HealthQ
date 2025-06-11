@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Buy Insurance</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .plan {
+            padding: 20px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background-color: white;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/">HealthQ</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="/doctor_loc">Find Doctors</a></li>
+        <li class="nav-item"><a class="nav-link" href="/medic">Pharmacy</a></li>
+        <li class="nav-item"><a class="nav-link" href="/insurance">Buy Insurance</a></li>
+        <li class="nav-item"><a class="nav-link" href="/contact">Feedback</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Insurance Section -->
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Buy Health Insurance</h2>
+
+    <div class="plan">
+        <h4>Basic Health Insurance</h4>
+        <p>Coverage: ₹2,00,000</p>
+        <p>Price: ₹3000/year</p>
+        <button class="btn btn-primary" onclick="addToCart('Basic Health Insurance', 3000)">Add to Cart</button>
+    </div>
+
+    <div class="plan">
+        <h4>Comprehensive Health Insurance</h4>
+        <p>Coverage: ₹5,00,000</p>
+        <p>Price: ₹7000/year</p>
+        <button class="btn btn-primary" onclick="addToCart('Comprehensive Health Insurance', 7000)">Add to Cart</button>
+    </div>
+
+    <div class="plan">
+        <h4>Premium Health Insurance</h4>
+        <p>Coverage: ₹10,00,000</p>
+        <p>Price: ₹12000/year</p>
+        <button class="btn btn-primary" onclick="addToCart('Premium Health Insurance', 12000)">Add to Cart</button>
+    </div>
+
+    <!-- Cart Section -->
+    <div class="card mt-5 p-4">
+        <h4>Your Cart</h4>
+        <ul id="cart-list" class="list-unstyled"></ul>
+        <button class="btn btn-success mt-3 w-100" onclick="placeOrder()">Place Order</button>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="bg-dark text-white text-center py-3 mt-5">
+    &copy; 2025 Doctor Appointment System
+</footer>
+
+<script>
+    let cart = [];
+
+    function addToCart(plan, price) {
+        cart.push({ plan, price });
+        renderCart();
+    }
+
+    function renderCart() {
+        let cartList = document.getElementById("cart-list");
+        cartList.innerHTML = "";
+        cart.forEach((item, index) => {
+            let li = document.createElement("li");
+            li.innerHTML = `${item.plan} - ₹${item.price} 
+                <button class="btn btn-sm btn-danger ms-2" onclick="removeFromCart(${index})">Remove</button>`;
+            cartList.appendChild(li);
+        });
+    }
+
+    function removeFromCart(index) {
+        cart.splice(index, 1);
+        renderCart();
+    }
+
+    function placeOrder() {
+        if (cart.length === 0) {
+            alert("Your cart is empty!");
+            return;
+        }
+
+        let message = "Insurance Order:%0A";
+        cart.forEach(item => {
+            message += `${item.plan} - ₹${item.price}%0A`;
+        });
+
+        // Redirect to WhatsApp
+        window.location.href = `https://wa.me/9542591253?text=${message}`;
+    }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Medicines</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .card img {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/">HealthQ</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="/doctor_loc">Find Doctors</a></li>
+        <li class="nav-item"><a class="nav-link" href="/medic">Pharmacy</a></li>
+        <li class="nav-item"><a class="nav-link" href="/insurance">Buy Insurance</a></li>
+        <li class="nav-item"><a class="nav-link" href="/contact">Feedback</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Medicines Section -->
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Available Medicines</h2>
+    <div class="row" id="medicine-list"></div>
+
+    <div class="card mt-5 p-4">
+        <h4>Cart</h4>
+        <ul id="cart-list" class="list-unstyled"></ul>
+        <button onclick="placeOrder()" class="btn btn-success mt-3 w-100">Place Order</button>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="bg-dark text-white text-center py-3 mt-5">
+    &copy; 2025 Doctor Appointment System
+</footer>
+
+<script>
+    let medicines = [
+        { name: "Paracetamol", img: "{{ url_for('static', filename='images/Paracetamol.jpeg') }}", price: 50 },
+        { name: "Ibuprofen", img: "{{ url_for('static', filename='images/Ibuprofen.jpeg') }}", price: 80 },
+        { name: "Cough Syrup", img: "{{ url_for('static', filename='images/Coughsyrup.jpeg') }}", price: 120 },
+        { name: "Amoxicillin", img: "{{ url_for('static', filename='images/Amoxicillin.jpeg') }}", price: 200 },
+        { name: "Vitamin C", img: "{{ url_for('static', filename='images/Vitaminc.jpeg') }}", price: 150 },
+        { name: "Aspirin", img: "{{ url_for('static', filename='images/Aspirin.jpeg') }}", price: 100 },
+        { name: "Antacid", img: "{{ url_for('static', filename='images/Antacid.jpeg') }}", price: 90 },
+        { name: "Cetirizine", img: "{{ url_for('static', filename='images/Cetirizine.jpeg') }}", price: 60 },
+        { name: "Pain Relief Gel", img: "{{ url_for('static', filename='images/Painreliefgel.jpeg') }}", price: 250 },
+        { name: "Insulin", img: "{{ url_for('static', filename='images/Insulin.jpeg') }}", price: 500 },
+        { name: "Multivitamins", img: "{{ url_for('static', filename='images/Multivitamins.jpeg') }}", price: 300 },
+        { name: "Cough Lozenges", img: "{{ url_for('static', filename='images/Coughlozenges.jpeg') }}", price: 75 }
+    ];
+
+    let cart = [];
+
+    function renderMedicines() {
+        let container = document.getElementById("medicine-list");
+        medicines.forEach(med => {
+            let div = document.createElement("div");
+            div.classList.add("col-md-3", "mb-4");
+            div.innerHTML = `
+                <div class="card p-3 text-center">
+                    <img src="${med.img}" alt="${med.name}">
+                    <h5 class="mt-2">${med.name}</h5>
+                    <p class="fw-bold">₹${med.price}</p>
+                    <button class="btn btn-primary" onclick="addToCart('${med.name}', ${med.price})">Add to Cart</button>
+                </div>`;
+            container.appendChild(div);
+        });
+    }
+
+    function addToCart(name, price) {
+        cart.push({ name, price });
+        renderCart();
+    }
+
+    function renderCart() {
+        let cartList = document.getElementById("cart-list");
+        cartList.innerHTML = "";
+        cart.forEach((item, index) => {
+            let li = document.createElement("li");
+            li.innerHTML = `${item.name} - ₹${item.price} <button class="btn btn-sm btn-danger ms-2" onclick="removeFromCart(${index})">Remove</button>`;
+            cartList.appendChild(li);
+        });
+    }
+
+    function removeFromCart(index) {
+        cart.splice(index, 1);
+        renderCart();
+    }
+
+    function placeOrder() {
+        if (cart.length === 0) {
+            alert("Cart is empty!");
+            return;
+        }
+        let orderText = "Medicine Order:%0A" + cart.map(item => `${item.name} - ₹${item.price}`).join("%0A");
+        window.location.href = `https://wa.me/9542591253?text=${orderText}`;
+    }
+
+    renderMedicines();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
